@@ -33,5 +33,4 @@ Thanks to `node` and `gulp`, you can improve core script, style or icons easily.
 
 # License
 
-
 This project is under MIT license. See [LICENSE](LICENSE) file for details.
