@@ -894,6 +894,7 @@
     // Add all emoji in a dropdown
     $.extend(true, $.trumbowyg, {
         langs: {
+            // jshint camelcase:false
             en: {
                 emoji: 'Add an emoji'
             },
@@ -902,8 +903,12 @@
             },
             zh_cn: {
                 emoji: '添加表情'
+            },
+            ja: {
+                emoji: '絵文字の挿入'
             }
         },
+        // jshint camelcase:true
         plugins: {
             emoji: {
                 init: function (trumbowyg) {

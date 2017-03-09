@@ -1,5 +1,5 @@
 /* ===========================================================
- * trumbowyg.colors.js v1.1
+ * trumbowyg.colors.js v1.2
  * Colors picker plugin for Trumbowyg
  * http://alex-d.github.com/Trumbowyg
  * ===========================================================
@@ -33,6 +33,10 @@
             zh_cn: {
                 foreColor: '文字颜色',
                 backColor: '背景颜色'
+            },
+            ja: {
+                foreColor: '文字色',
+                backColor: '背景色'
             }
         }
     });
@@ -98,7 +102,7 @@
         plugins: {
             color: {
                 init: function (trumbowyg) {
-                    trumbowyg.o.plugins.colors = $.extend(true, {}, defaultOptions, trumbowyg.o.plugins.colors || {});
+                    trumbowyg.o.plugins.colors = trumbowyg.o.plugins.colors || defaultOptions;
                     var foreColorBtnDef = {
                             dropdown: buildDropdown('foreColor', trumbowyg)
                         },
