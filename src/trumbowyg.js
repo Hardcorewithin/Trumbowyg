@@ -59,9 +59,7 @@ jQuery.trumbowyg = {
     plugins: {},
 
     // SVG Path globally
-    svgPath: null,
-
-    hideButtonTexts: null
+    svgPath: null
 };
 
 
@@ -149,8 +147,6 @@ jQuery.trumbowyg = {
         } else {
             t.lang = $.trumbowyg.langs.en;
         }
-
-        t.hideButtonTexts = $.trumbowyg.hideButtonTexts != null ? $.trumbowyg.hideButtonTexts : options.hideButtonTexts;
 
         // SVG path
         var svgPathOption = $.trumbowyg.svgPath != null ? $.trumbowyg.svgPath : options.svgPath;
@@ -341,6 +337,7 @@ jQuery.trumbowyg = {
         // Defaults Options
         t.o = $.extend(true, {}, {
             lang: 'en',
+            useComposition: true,
 
             fixedBtnPane: false,
             fixedFullWidth: false,
@@ -440,9 +437,6 @@ jQuery.trumbowyg = {
 
         // Admit multiple paste handlers
         t.pasteHandlers = [].concat(t.o.pasteHandlers);
-
-        // Check if browser is IE
-        t.isIE = (navigator.userAgent.indexOf('MSIE') !== -1 || navigator.appVersion.indexOf('Trident/') !== -1);
 
         t.init();
     };
@@ -550,46 +544,34 @@ jQuery.trumbowyg = {
 
             var ctrl = false,
                 composition = false,
-                debounceButtonPaneStatus,
-                updateEventName = t.isIE ? 'keyup' : 'input';
+                debounceButtonPaneStatus;
 
             t.$ed
                 .on('dblclick', 'img', t.o.imgDblClickHandler)
                 .on('keydown', function (e) {
+                    composition = t.o.useComposition && (e.which === 229);
+
                     if (e.ctrlKey) {
                         ctrl = true;
-                        var key = t.keys[String.fromCharCode(e.which).toUpperCase()];
+                        var k = t.keys[String.fromCharCode(e.which).toUpperCase()];
 
                         try {
-                            t.execCmd(key.fn, key.param);
+                            t.execCmd(k.fn, k.param);
                             return false;
                         } catch (c) {
                         }
                     }
                 })
-                .on('compositionstart compositionupdate', function () {
-                    composition = true;
-                })
-                .on(updateEventName + ' compositionend', function (e) {
-                  if (e.type === 'compositionend') {
-                        composition = false;
-                    } else if(composition) {
+                .on('keyup input', function (e) {
+                    if (e.which >= 37 && e.which <= 40) {
                         return;
                     }
 
-                    var keyCode = e.which;
-
-                    if (keyCode >= 37 && keyCode <= 40) {
-                        return;
-                    }
-
-                    if (e.ctrlKey && (keyCode === 89 || keyCode === 90)) {
+                    if (e.ctrlKey && (e.which === 89 || e.which === 90)) {
                         t.$c.trigger('tbwchange');
-                    } else if (!ctrl && keyCode !== 17) {
-                        t.semanticCode(false, keyCode === 13);
+                    } else if (!ctrl && e.which !== 17 && !composition) {
+                        t.semanticCode(false, e.which === 13);
                         t.$c.trigger('tbwchange');
-                    } else if (typeof e.which === 'undefined') {
-                        t.semanticCode(false, false, true);
                     }
 
                     setTimeout(function () {
@@ -646,7 +628,7 @@ jQuery.trumbowyg = {
                     }, 0);
                 });
             t.$ta.on('keyup paste', function () {
-              t.$c.trigger('tbwchange');
+                t.$c.trigger('tbwchange');
             });
 
             t.$box.on('keydown', function (e) {
@@ -715,9 +697,7 @@ jQuery.trumbowyg = {
                 $btn = $('<button/>', {
                     type: 'button',
                     class: prefix + btnName + '-button ' + (btn.class || '') + (!hasIcon ? ' ' + prefix + 'textual-button' : ''),
-                    html: t.hasSvg && hasIcon ?
-                      '<svg><use xlink:href="' + t.svgPath + '#' + prefix + (btn.ico || btnName).replace(/([A-Z]+)/g, '-$1').toLowerCase() + '"/></svg>' :
-                      t.hideButtonTexts ? '' : (btn.text || btn.title || t.lang[btnName] || btnName),
+                    html: t.hasSvg && hasIcon ? '<svg><use xlink:href="' + t.svgPath + '#' + prefix + (btn.ico || btnName).replace(/([A-Z]+)/g, '-$1').toLowerCase() + '"/></svg>' : (btn.text || btn.title || t.lang[btnName] || btnName),
                     title: (btn.title || btn.text || textDef) + ((btn.key) ? ' (Ctrl + ' + btn.key + ')' : ''),
                     tabindex: -1,
                     mousedown: function () {
@@ -1028,8 +1008,7 @@ jQuery.trumbowyg = {
         // Analyse and update to semantic code
         // @param force : force to sync code from textarea
         // @param full  : wrap text nodes in <p>
-        // @param keepRange  : leave selection range as it is
-        semanticCode: function (force, full, keepRange) {
+        semanticCode: function (force, full) {
             var t = this;
             t.saveRange();
             t.syncCode(force);
@@ -1078,9 +1057,7 @@ jQuery.trumbowyg = {
                     t.$ed.find('p:empty').remove();
                 }
 
-                if (!keepRange) {
-                    t.restoreRange();
-                }
+                t.restoreRange();
 
                 t.syncTextarea();
             }
@@ -1231,7 +1208,7 @@ jQuery.trumbowyg = {
                 } catch (e2) {
                     if (cmd === 'insertHorizontalRule') {
                         param = undefined;
-                    } else if (cmd === 'formatBlock' && t.isIE) {
+                    } else if (cmd === 'formatBlock' && (navigator.userAgent.indexOf('MSIE') !== -1 || navigator.appVersion.indexOf('Trident/') !== -1)) {
                         param = '<' + param + '>';
                     }
 
@@ -1542,7 +1519,7 @@ jQuery.trumbowyg = {
         },
         getTagsRecursive: function (element, tags) {
             var t = this;
-            tags = tags || (element && element.tagName ? [element.tagName] : []);
+            tags = tags || [];
 
             if (element && element.parentNode) {
                 element = element.parentNode;

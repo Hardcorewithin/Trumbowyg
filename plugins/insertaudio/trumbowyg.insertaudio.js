@@ -35,9 +35,6 @@
         langs: {
             en: {
                 insertAudio: 'Insert Audio'
-            },
-            ja: {
-                insertAudio: '音声の挿入'
             }
         },
         plugins: {

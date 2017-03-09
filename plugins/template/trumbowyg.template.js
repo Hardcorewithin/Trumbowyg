@@ -9,9 +9,6 @@
             },
             nl: {
                 template: 'Sjabloon'
-            },
-            ja: {
-                template: 'テンプレート'
             }
         }
     });

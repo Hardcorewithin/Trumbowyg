@@ -47,7 +47,6 @@ jQuery.trumbowyg.langs.fr = {
     justifyFull: 'Justifier',
 
     horizontalRule: 'Insérer un séparateur horizontal',
-    removeformat: 'Supprimer formatage',
 
     fullscreen: 'Plein écran',
 

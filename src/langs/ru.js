@@ -9,9 +9,6 @@
 jQuery.trumbowyg.langs.ru = {
     viewHTML: 'Посмотреть HTML',
 
-    undo: 'Отменить',
-    redo: 'Повторить',
-
     formatting: 'Форматирование',
     p: 'Обычный',
     blockquote: 'Цитата',
@@ -26,9 +23,6 @@ jQuery.trumbowyg.langs.ru = {
     strong: 'Полужирный',
     em: 'Курсив',
     del: 'Зачеркнутый',
-
-    superscript: 'Надстрочный',
-    subscript: 'Подстрочный',
 
     unorderedList: 'Обычный список',
     orderedList: 'Нумерованный список',
@@ -45,7 +39,6 @@ jQuery.trumbowyg.langs.ru = {
     justifyFull: 'По ширине',
 
     horizontalRule: 'Горизонтальная линия',
-    removeformat: 'Очистить форматирование',
 
     fullscreen: 'Во весь экран',
 
